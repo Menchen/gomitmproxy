@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"crypto/tls"
 	"encoding/pem"
+	utls "github.com/refraction-networking/utls"
 	"io"
 	"net"
 	"net/http"
@@ -403,8 +404,8 @@ func (p *Proxy) handleTunnel(session *Session) (err error) {
 	// instead.
 	if session.ctx.IsMITM() {
 		getClientCert := func(
-			info *tls.CertificateRequestInfo,
-		) (certificate *tls.Certificate, e error) {
+			info *utls.CertificateRequestInfo,
+		) (certificate *utls.Certificate, e error) {
 			// We purposefully cause an error here so that the
 			// http.Transport.RoundTrip method failed. In this case we'll
 			// receive the error and will be able to add the host to
@@ -412,10 +413,10 @@ func (p *Proxy) handleTunnel(session *Session) (err error) {
 			return nil, errClientCertRequested
 		}
 
-		tlsConn := tls.Client(conn, &tls.Config{
+		tlsConn := utls.UClient(conn, &utls.Config{
 			ServerName:           session.req.URL.Host,
 			GetClientCertificate: getClientCert,
-		})
+		}, utls.HelloChrome_102)
 
 		// Handshake with the remote server.
 		if err = tlsConn.Handshake(); err != nil {
