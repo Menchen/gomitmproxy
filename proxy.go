@@ -15,7 +15,7 @@ import (
 	"time"
 
 	"github.com/AdguardTeam/golibs/log"
-	"github.com/AdguardTeam/gomitmproxy/proxyutil"
+	"github.com/Menchen/gomitmproxy/proxyutil"
 	"github.com/pkg/errors"
 )
 
@@ -416,7 +416,7 @@ func (p *Proxy) handleTunnel(session *Session) (err error) {
 		tlsConn := utls.UClient(conn, &utls.Config{
 			ServerName:           session.req.URL.Host,
 			GetClientCertificate: getClientCert,
-		}, utls.HelloChrome_102)
+		}, p.Config.TLSFingerprint)
 
 		// Handshake with the remote server.
 		if err = tlsConn.Handshake(); err != nil {

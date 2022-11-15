@@ -5,6 +5,8 @@ import (
 	"net"
 	"net/http"
 
+	utls "github.com/refraction-networking/utls"
+
 	"github.com/AdguardTeam/gomitmproxy/mitm"
 )
 
@@ -38,6 +40,8 @@ type Config struct {
 	// MITMConfig defines the MITM configuration of the proxy. If it is not set
 	// MITM won't be enabled for this proxy instance.
 	MITMConfig *mitm.Config
+
+	TLSFingerprint utls.ClientHelloID
 
 	// MITMExceptions is a list of hostnames for which MITM will be disabled.
 	MITMExceptions []string
