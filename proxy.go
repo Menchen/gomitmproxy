@@ -687,7 +687,8 @@ func (p *Proxy) prepareRequest(req *http.Request, session *Session) {
 		// Force HTTPS for secure sessions.
 		req.URL.Scheme = "https"
 	}
-	req.RemoteAddr = session.ctx.conn.RemoteAddr().String()
+	// Uncomment to send X-Forwarded-Host
+	//req.RemoteAddr = session.ctx.conn.RemoteAddr().String()
 
 	// Remove unsupported encodings.
 	if req.Header.Get("Accept-Encoding") != "" {
@@ -718,7 +719,7 @@ func (p *Proxy) canMITM(hostname string) (ok bool) {
 	if port != "443" {
 		log.Debug("do not attempt to MITM connections to a port different from 443")
 
-		return false
+		//return false
 	}
 
 	p.invalidTLSHostsMu.RLock()
