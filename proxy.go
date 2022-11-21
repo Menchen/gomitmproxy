@@ -25,8 +25,8 @@ var errClientCertRequested = errors.New("tls: client cert authentication unsuppo
 // By default we have no timeout.
 //
 // TODO(ameshkov): rework deadlines (see #13 for example).
-const defaultTimeout = 0
-const dialTimeout = 30 * time.Second
+const defaultTimeout = 60 * time.Second
+const dialTimeout = 60 * time.Second
 const tlsHandshakeTimeout = 10 * time.Second
 
 // Proxy is a structure with the proxy server configuration and current state.
@@ -283,7 +283,7 @@ func (p *Proxy) handleRequest(ctx *Context) error {
 		// not a CONNECT request, processing a plain HTTP request.
 		// res body is closed below (see session.res.body.Close()).
 		// nolint:bodyclose
-		res, err := p.transport.RoundTrip(session.req)
+		res, err := p.transport.RoundTrip(session.req.WithContext(origReq.Context()))
 		if err != nil {
 			log.Error("id=%s: failed to round trip: %v", session.ID(), err)
 			p.raiseOnError(session, err)
