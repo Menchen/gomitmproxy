@@ -476,7 +476,7 @@ func (p *Proxy) handleConnect(session *Session) (err error) {
 		return err
 	}
 
-	if p.canMITM(session.req.URL.Host) {
+	if session.req.Method == "CONNECT" || p.canMITM(session.req.URL.Host) {
 		log.Debug("id=%s: attempting MITM for connection", session.ID())
 		// nolint:bodyclose
 		// body is actually closed.
@@ -719,7 +719,7 @@ func (p *Proxy) canMITM(hostname string) (ok bool) {
 	if port != "443" {
 		log.Debug("do not attempt to MITM connections to a port different from 443")
 
-		//return false
+		return false
 	}
 
 	p.invalidTLSHostsMu.RLock()
