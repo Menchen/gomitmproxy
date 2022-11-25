@@ -264,6 +264,11 @@ func (p *Proxy) handleRequest(ctx *Context) error {
 				session.res = res
 				defer res.Body.Close()
 				_ = p.writeResponse(session)
+				if ctx.props["authRetry"] == nil {
+					ctx.props["authRetry"] = true
+					err := p.handleRequest(ctx)
+					return err
+				}
 				return errClose
 			}
 		}
